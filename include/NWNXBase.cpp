@@ -19,11 +19,13 @@
 
  ***************************************************************************/
 
+#pragma warning(disable : 4996)
+
 #include "stdafx.h"
 #include "NWNXBase.h"
 #include "IniFile.h"
 #include <stdarg.h>
-#include <typeinfo.h>
+#include <typeinfo>
 #include <time.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -50,7 +52,7 @@ BOOL CNWNXBase::OnCreate(const char* LogFile)
 	BaseConf();
 
 	// try to open the log file
-	m_LogFile = strdup(LogFile);
+	m_LogFile = _strdup(LogFile);
 	m_fFile = fopen (LogFile, "w");
 	return (m_fFile != NULL);
 }
@@ -58,7 +60,7 @@ BOOL CNWNXBase::OnCreate(const char* LogFile)
 BOOL CNWNXBase::OnRelease()
 {
 	// close the log file
-	int ret;
+	int ret{};
 	if (m_fFile)
 		ret = fclose (m_fFile);
 	return (ret == 0);
@@ -112,7 +114,7 @@ void CNWNXBase::Log(int priority, const char *pcMsg, ...)
 	{  
 		// build up the string
 		va_start(argList, pcMsg);
-		_vsnprintf(acBuffer, 2047, pcMsg, argList);
+		_vsnprintf_s(acBuffer, 2047, pcMsg, argList);
 		acBuffer[2047] = 0;
 		va_end(argList);
 
@@ -129,12 +131,12 @@ void CNWNXBase::TimestampedLog(const char *pcMsg, ...)
 
 	if (m_fFile)
 	{  
-		_strtime (acTime);
-		_strdate (acDate);
+		_strtime_s (acTime);
+		_strdate_s (acDate);
 
 		// build up the string
 		va_start(argList, pcMsg);
-		_vsnprintf(acBuffer, 2047, pcMsg, argList);
+		_vsnprintf_s(acBuffer, 2047, pcMsg, argList);
 		acBuffer[2047] = 0;
 		va_end(argList);
 
@@ -152,12 +154,12 @@ void CNWNXBase::TimestampedLog(int priority, const char *pcMsg, ...)
 
 	if (m_fFile && priority<=debuglevel)
 	{  
-		_strtime (acTime);
-		_strdate (acDate);
+		_strtime_s (acTime);
+		_strdate_s (acDate);
 
 		// build up the string
 		va_start(argList, pcMsg);
-		_vsnprintf(acBuffer, 2047, pcMsg, argList);
+		_vsnprintf_s(acBuffer, 2047, pcMsg, argList);
 		acBuffer[2047] = 0;
 		va_end(argList);
 

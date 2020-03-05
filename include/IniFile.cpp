@@ -40,7 +40,7 @@ CIniFile::~CIniFile()
 int CIniFile::ReadInteger (LPCSTR lpszSection, LPCSTR lpszKey, int iDefault)
 {
 	// read integer value from ini-file
-	return GetPrivateProfileInt (lpszSection, lpszKey, iDefault, m_szFileName);
+	return GetPrivateProfileIntA (lpszSection, lpszKey, iDefault, m_szFileName);
 }
 
 long CIniFile::ReadLong (LPCSTR lpszSection, LPCSTR lpszKey, long lDefault)
@@ -49,7 +49,7 @@ long CIniFile::ReadLong (LPCSTR lpszSection, LPCSTR lpszKey, long lDefault)
 	char buffer[256];
 	
 	ReadString(lpszSection, lpszKey, buffer, 256, "");
-	if (stricmp(buffer, "") != 0) 
+	if (_stricmp(buffer, "") != 0) 
 		return atol(buffer);	
 	else
 		return lDefault;
@@ -58,16 +58,16 @@ long CIniFile::ReadLong (LPCSTR lpszSection, LPCSTR lpszKey, long lDefault)
 void CIniFile::ReadString (LPCSTR lpszSection, LPCSTR lpszKey, LPSTR lpszBuffer, int Size, LPCSTR lpszDefault)
 {
 	// read string value
-	GetPrivateProfileString (lpszSection, lpszKey, lpszDefault, lpszBuffer, Size, m_szFileName);
+	GetPrivateProfileStringA (lpszSection, lpszKey, lpszDefault, lpszBuffer, Size, m_szFileName);
 }
 
 bool CIniFile::ReadBool(LPCSTR lpszSection, LPCSTR lpszKey, bool iDefault)
 {
 	char buffer[256];
 	ReadString(lpszSection, lpszKey, buffer, 256, "");
-	if ((stricmp(buffer, "true") == 0) || 
-		(stricmp(buffer, "yes") == 0) ||
-		(stricmp(buffer, "1") == 0))
+	if ((_stricmp(buffer, "true") == 0) || 
+		(_stricmp(buffer, "yes") == 0) ||
+		(_stricmp(buffer, "1") == 0))
 	{
 		return true;
 	}

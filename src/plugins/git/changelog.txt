@@ -1,0 +1,5 @@
+Changelog for the Demo Plugin
+
+* 10.02.2005: v0.1
+- Initial release under the GPL (see licence.txt)
+

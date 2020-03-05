@@ -116,7 +116,7 @@ public:
 	FILE* m_fFile;
 	char* m_LogFile;
 	long m_maxLogSizeKB;
-	char* confKey;
+	const char* confKey;
 	int debuglevel;
 
 protected:
