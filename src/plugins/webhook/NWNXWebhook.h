@@ -44,10 +44,16 @@ public:
     std::string BuildMessageChunk(std::string parentToken);
     std::string BuildWebhookMessage();
     void SetArrayTokens(char* Parameters);
-    
+
 private:
     std::string Payload{};
-    const char* elementDelimiter = "!";
+
+    const char cDelimiter = '!';
+    std::string sDelimiter = std::string(1, cDelimiter);
+
+
+   // const char elementDelimiter = '!';
+    //std::string elementDelimiter = "!";
     std::unordered_map<std::string, std::string> messageMap;
     std::string arrayTokens{};
 };

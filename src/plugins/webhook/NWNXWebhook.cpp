@@ -31,8 +31,8 @@ struct vectorComparator
 {
 	bool operator ()(const string& string1, const string& string2)
 	{
-		//if (count(begin(string1), end(string1), "!") < count(begin(string2), end(string2), "!") + 1)
-		//	return string1 < string2;
+		if (count(string1.begin(), string1.end(), '!') < count(string2.begin(), string2.end(), '!') + 1)
+			return string1 < string2;
 		return string1 < string2;
 	}
 };
@@ -177,9 +177,10 @@ void CNWNXWebhook::SetArrayTokens(char* Parameters)
 void CNWNXWebhook::AddMessageElement(char* Request, char* Parameters)
 {
 	messageMap.emplace(Request, Parameters);
+	Log(0, "... Message element added: %s, %s", Request, Parameters);
 }
 
-string buildParentToken(vector<string> elements, string elementDelimiter)
+string buildParentToken(vector<string> elements, const char* elementDelimiter)
 {
 	string result{};
 	
@@ -209,10 +210,10 @@ string CNWNXWebhook::BuildMessageChunk(string parentToken)
 	vector<string> tokens;
 
 	for (auto it = messageMap.begin(); it != messageMap.end(); ++it)
-		if (it->first.find(parentToken) != string::npos && 
-			count(it->first.begin(), it->first.end(), elementDelimiter) == count(parentToken.begin(), parentToken.end(), elementDelimiter) + 1)
+		if (it->first.find(parentToken) != string::npos &&
+			count(it->first.begin(), it->first.end(), cDelimiter) == count(parentToken.begin(), parentToken.end(),cDelimiter) + 1)
 		{
-			tokens = explode(elementDelimiter, it->first);
+			tokens = explode(sDelimiter, it->first);
 			messageChunk += (messageChunk.size() > 0 ? "," : "") + '\"' + tokens[tokens.size()] + "\":" + buildValueString(it->second);
 			messageMap.erase(it);
 		}
@@ -254,6 +255,7 @@ string CNWNXWebhook::BuildWebhookMessage()
 	}
 
 	*/
+	return "";
 }
 
 
