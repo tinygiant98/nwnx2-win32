@@ -22,6 +22,20 @@
 #include "stdafx.h"
 #include "NWNXWebhook.h"
 #include "IniFile.h"
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+struct vectorComparator
+{
+	bool operator ()(const string& string1, const string& string2)
+	{
+		//if (count(begin(string1), end(string1), "!") < count(begin(string2), end(string2), "!") + 1)
+		//	return string1 < string2;
+		return string1 < string2;
+	}
+};
 
 CNWNXWebhook::CNWNXWebhook()
 {
@@ -31,6 +45,37 @@ CNWNXWebhook::CNWNXWebhook()
 CNWNXWebhook::~CNWNXWebhook()
 {
 	OnRelease();
+}
+
+vector<string> explode(const string& delimiter, const string& str)
+{
+	vector<string> elements;
+
+	int strleng = str.length();
+	int delleng = delimiter.length();
+	if (delleng == 0)
+		return elements;//no change
+
+	int i = 0;
+	int k = 0;
+	while (i < strleng)
+	{
+		int j = 0;
+		while (i + j < strleng && j < delleng && str[i + j] == delimiter[j])
+			j++;
+		if (j == delleng)//found delimiter
+		{
+			elements.push_back(str.substr(k, i - k));
+			i += delleng;
+			k = i;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	elements.push_back(str.substr(k, i - k));
+	return elements;
 }
 
 char* CNWNXWebhook::OnRequest(char* gameObject, char* Request, char* Parameters)
@@ -121,5 +166,94 @@ void CNWNXWebhook::WriteLogHeader()
 {
 	Log(0, "NWNX Webhook plugin V.0.1\n");
 	Log(0, "(c) 2020 by Edward Burke (tinygiant)\n");
-	Log(0, "Visit the Dragon Myrth PW forums at forums.blue-field.dk\n\n");
+	Log(0, "Visit the Dragon Myrth PW forums at forum.blue-field.dk\n\n");
 }
+
+void CNWNXWebhook::SetArrayTokens(char* Parameters)
+{
+	arrayTokens = Parameters;
+}
+
+void CNWNXWebhook::AddMessageElement(char* Request, char* Parameters)
+{
+	messageMap.emplace(Request, Parameters);
+}
+
+string buildParentToken(vector<string> elements, string elementDelimiter)
+{
+	string result{};
+	
+	if (elements.size() == 1)
+		return "";
+	else
+	{
+		for (int i = 1; i = elements.size() - 1; i++)
+		{
+			result = elements[i] + (i == elements.size() - 1 ? "" : elementDelimiter);
+		}
+		return result;
+	}
+}
+
+string buildValueString(string input)
+{
+	if (input == "true" || input == "false")
+		return input;
+	else
+		return '\"' + input + '\"';
+}
+
+string CNWNXWebhook::BuildMessageChunk(string parentToken)
+{
+	string messageChunk{};
+	vector<string> tokens;
+
+	for (auto it = messageMap.begin(); it != messageMap.end(); ++it)
+		if (it->first.find(parentToken) != string::npos && 
+			count(it->first.begin(), it->first.end(), elementDelimiter) == count(parentToken.begin(), parentToken.end(), elementDelimiter) + 1)
+		{
+			tokens = explode(elementDelimiter, it->first);
+			messageChunk += (messageChunk.size() > 0 ? "," : "") + '\"' + tokens[tokens.size()] + "\":" + buildValueString(it->second);
+			messageMap.erase(it);
+		}
+
+	messageChunk = '{' + messageChunk + '}';
+
+	if (arrayTokens.find(tokens[tokens.size() - 1]) != string::npos)
+		messageChunk += '\"' + tokens[tokens.size() - 1] + "\":[" + messageChunk + ']';
+	else messageChunk += '\"' + tokens[tokens.size() - 1] + "\":" + messageChunk;
+
+	return messageChunk;
+}
+
+string CNWNXWebhook::BuildWebhookMessage()
+{
+	vector<string> orderedKeys;
+	string payload{};
+	string message{};
+
+	//create a vector and sort the keys so we can access a little more quickly.
+	orderedKeys.reserve(messageMap.size());
+	for (auto& it : messageMap) {orderedKeys.push_back(it.first);}
+	sort(orderedKeys.begin(), orderedKeys.end(), vectorComparator());
+
+	for (auto it = orderedKeys.begin(); it != orderedKeys.end(); ++it)
+	{
+		Log(0, *it);
+	}
+	/*
+
+	//iterate through the sorted vector and build the appropriate message segments.
+	for (auto it = messageMap.begin(); it != messageMap.end(); ++it)
+	{
+		if (count(it->first.begin(), it->first.end(), elementDelimiter) == 2);  //replace with loop counter
+		string parentToken = buildParentToken(explode(it->first, elementDelimiter), elementDelimiter);
+
+		message = BuildMessageChunk(parentToken);
+
+	}
+
+	*/
+}
+
+

@@ -21,6 +21,8 @@
 #define NWNXWEBHOOK_H_
 
 #include "NWNXBase.h"
+#include <string>
+#include <unordered_map>
 
 #if _MSC_VER > 1000
 #pragma once
@@ -36,12 +38,18 @@ public:
     char* OnRequest(char* gameObject, char* Request, char* Parameters);
 
     void LoadConfiguration();
-
-
-
     BOOL OnRelease();
-
     void WriteLogHeader();
+    void AddMessageElement(char* Element, char* Value);
+    std::string BuildMessageChunk(std::string parentToken);
+    std::string BuildWebhookMessage();
+    void SetArrayTokens(char* Parameters);
+    
+private:
+    std::string Payload{};
+    const char* elementDelimiter = "!";
+    std::unordered_map<std::string, std::string> messageMap;
+    std::string arrayTokens{};
 };
 
 #endif
