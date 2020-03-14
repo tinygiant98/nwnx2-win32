@@ -19,10 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\IniFile.h" />
-    <ClInclude Include="..\..\..\include\NWNXBase.h" />
     <ClInclude Include="NWNXWebhook.h" />
-    <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\include\IniFile.cpp" />
@@ -109,12 +106,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;WEBHOOK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\Users\Ed\Desktop\Git Repositories\NWNX2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\12295\Desktop\Git Repositories\NWNX2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +140,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;WEBHOOK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\Users\Ed\Desktop\Git Repositories\NWNX2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\12295\Desktop\Git Repositories\NWNX2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,6 +148,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

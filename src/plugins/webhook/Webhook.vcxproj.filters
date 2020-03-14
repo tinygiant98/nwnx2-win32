@@ -15,15 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\IniFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\NWNXBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StdAfx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NWNXWebhook.h">
       <Filter>Header Files</Filter>
     </ClInclude>

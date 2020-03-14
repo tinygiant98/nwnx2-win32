@@ -20,13 +20,17 @@
 #if !defined(NWNXWEBHOOK_H_)
 #define NWNXWEBHOOK_H_
 
-#include "NWNXBase.h"
-#include <string>
-#include <unordered_map>
-
 #if _MSC_VER > 1000
 #pragma once
 #endif
+
+#include "stdafx.h"
+#include "IniFile.h"
+#include "NWNXBase.h"
+#include <algorithm>
+#include <vector>
+#include <string>
+using namespace std;
 
 class CNWNXWebhook : public CNWNXBase
 {
@@ -35,27 +39,29 @@ public:
     virtual ~CNWNXWebhook();
 
     BOOL OnCreate(const char* LogDir);
-    char* OnRequest(char* gameObject, char* Request, char* Parameters);
-
-    void LoadConfiguration();
-    BOOL OnRelease();
+	BOOL OnRelease();
+	
+	char* OnRequest(char* gameObject, char* Request, char* Parameters);
+    
     void WriteLogHeader();
-    void AddMessageElement(char* Element, char* Value);
-    std::string BuildMessageChunk(std::string parentToken);
-    std::string BuildWebhookMessage();
-    void SetArrayTokens(char* Parameters);
+    void SetDelimiter(string delimiter, string value);
+    void SetEnclosure(string type, string value);
+    void AddMessageElement(string Elements);
+    void BuildWebhookMessage();
 
+    string BuildMessageChunk(string parentToken);
 private:
-    std::string Payload{};
+    vector<string> messageVector;
 
-    const char cDelimiter = '!';
-    std::string sDelimiter = std::string(1, cDelimiter);
+    string pairDelimiter{};
+	string valueDelimiter{};
+	string arrayDelimiter{};
+	string elementDelimiter{};
+    string replace = "*****";
+    string arrayDelimiters{};
+    string objectDelimiters{};
 
 
-   // const char elementDelimiter = '!';
-    //std::string elementDelimiter = "!";
-    std::unordered_map<std::string, std::string> messageMap;
-    std::string arrayTokens{};
 };
 
 #endif
