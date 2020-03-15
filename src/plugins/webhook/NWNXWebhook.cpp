@@ -347,23 +347,67 @@ void CNWNXWebhook::BuildWebhookMessage()
 								}
 							}
 						}
-					}
+						message = enclose(message, objectDelimiters);
+						draft += (draft.length() > 0 ? string(",") : string()) + message;
+						message = string();
+					}    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ So need this here when the inner loop is not run
 
-				}
-				message = enclose(message, objectDelimiters);
-				draft += (draft.length() > 0 ? string(",") : string()) + message;
-				message = string();
+				}			// but down here when it is, but not both at the same time?  Need some serious debugging with some test messages to figure this one out.
+				//message = enclose(message, objectDelimiters);
+				//draft += (draft.length() > 0 ? string(",") : string()) + message;
+				//message = string();
 			}
 		}
 	}
-	draft = enclose(draft, arrayDelimiters);
-	draft = string("\"") + targetToken + string("\":") + draft;
-	payload += (payload.length() > 0 ? string(",") : string()) + draft;
-	draft = string();
+	if (!draft.empty())
+	{
+		draft = enclose(draft, arrayDelimiters);
+		draft = string("\"") + targetToken + string("\":") + draft;
+		payload += (payload.length() > 0 ? string(",") : string()) + draft;
+		draft = string();
+	}
 
 	payload = enclose(payload, objectDelimiters);
 	messageVector.clear();
 
-	//Send webhook
+	SendWebhook(payload);
 	Log(0, "Created payload: %s\n", payload.data());
 }
+
+void CNWNXWebhook::SendWebhook(string message)
+{
+	string discordurl = "https://discordapp.com/api/webhooks/688525447318994959/XdOaqoj2UaL07G46nBka03ECa5cAQZcopJ5XV4xAtTwRqTh4EqV35k-Je_R32z7jUsNJ";
+
+	CURL* curl;
+	CURLcode res;
+	struct curl_slist *headers = NULL;
+
+	/* In windows, this will init the winsock stuff */
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	/* get a curl handle */
+	curl = curl_easy_init();
+	if (curl) {
+		
+		headers = curl_slist_append(headers, "Content-Type: application/json");
+		
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		/* First set the URL that is about to receive our POST. This URL can
+		   just as well be a https:// URL if that is what should receive the
+		   data. */
+		curl_easy_setopt(curl, CURLOPT_URL, discordurl.c_str());
+		/* Now specify the POST data */
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, message.c_str());
+
+		/* Perform the request, res will get the return code */
+		res = curl_easy_perform(curl);
+		/* Check for errors */
+		if (res != CURLE_OK)
+			Log(0, "\nWebhook send failed\n");
+
+		/* always cleanup */
+		curl_easy_cleanup(curl);
+	}
+	curl_global_cleanup();
+}
+

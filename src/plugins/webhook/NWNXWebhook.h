@@ -30,6 +30,22 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+
+#define CURL_STATICLIB
+#include <curl.h>
+
+#ifdef _DEBUG
+#pragma comment (lib, "libcurl_a_debug.lib")
+#else
+#pragma comment (lib, "libcur_a.lib")
+#endif
+
+#pragma comment (lib, "Normaliz.lib")
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Wldap32.lib")
+#pragma comment (lib, "Crypt32.lib")
+#pragma comment (lib, "advapi32.lib")
+
 using namespace std;
 
 class CNWNXWebhook : public CNWNXBase
@@ -48,6 +64,7 @@ public:
     void SetEnclosure(string type, string value);
     void AddMessageElement(string Elements);
     void BuildWebhookMessage();
+    void SendWebhook(string message);
 
     string BuildMessageChunk(string parentToken);
 private:
