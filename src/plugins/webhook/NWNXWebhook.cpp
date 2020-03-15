@@ -376,7 +376,7 @@ void CNWNXWebhook::BuildWebhookMessage()
 
 void CNWNXWebhook::SendWebhook(string message)
 {
-	string discordurl = "https://discordapp.com/api/webhooks/688525447318994959/XdOaqoj2UaL07G46nBka03ECa5cAQZcopJ5XV4xAtTwRqTh4EqV35k-Je_R32z7jUsNJ";
+	string discordurl = "http://***removed***";
 
 	CURL* curl;
 	CURLcode res;
