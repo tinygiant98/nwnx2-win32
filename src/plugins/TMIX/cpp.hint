@@ -1,0 +1,2 @@
+#define TMIX_API __declspec(dllexport)
+#define TMIX_API __declspec(dllimport)
